@@ -1,0 +1,46 @@
+---
+title: "Shiny App on Football Data"
+subtitle: "Course Project for Developing Data Products module of Data Science Specialization on Coursera"
+author: "Nicola Bronzino"
+date: "Thursday, December 24, 2015"
+output: html_document
+---
+
+#Content
+This document summarizes characteristics of application developed to present data of main European Football Leagues for period 2011-2015.
+  
+#Source
+Data have been extracted from website http://football-data.co.uk, that makes available statistical information on many football leagues all over the world. Application is focused on data of the main European Football Leagues:  
+1. **Premier League** - England;  
+2. **Serie A** - Italy;  
+3. **La Liga** - Spain;  
+4. **Bundesliga** - Germany.  
+Data presented are referred to period between 2011 and 2015 (football seasons 2010/2011 - 2014/2015).  
+In the future, if required, analysis can be extended to additional leagues and additional periods.  
+  
+#Data  
+For each season and league, a csv file has been downloaded from the source website. A database of 20 files has been created and stored under the "data" folder that is part of the application. No preliminary activities have been executed on files, file are stored in the same format in which they have been downloaded from the source. In line with reproducibility deadlines, all the processing activities are performed online when the application is launched.   
+
+#Application Structure  
+Application is organized in two files:  
+1. **ui.R**, containing structure of the User Interface;  
+2. **server.R**, containing instructions for backend processing of data.  
+  
+##a. Frontend Structure  
+Interface is defined through the `fluidPage` command, identifying:  
+1. a `headerPanel` component, organized in 2 rows, one containing the title and the other dedicated to subtitle;  
+2. a `sidebarPanel` component, dedicated to objects that can be used to navigate data. In detail, we have:   
+a. a `radioButton` to select the **League**;  
+b. a `radioButton` to select the **Year**;  
+c. a `slider` to filter the **Matchdays** to analyze;  
+3. a `mainPanel` component, where charts and table are presented. Main Panel is organized in 3 tabs:  
+a. `Chart`, where interactive figures created with `rCharts` are presented;  
+b. `Full Data`, where global data referred to season and league selected are presented in tabular form;  
+c. `Regression`, where a regression analysis is performed for each league, to identify the relationship between Goals and Shots on Target. User can use it to predict expected number of Goals based on the number of Shots on Target.  
+  
+##b. Backend Structure  
+The main calculations performed in **server.R** file are calculations to organize data by team.  
+In the original files, data is organized by match: for this reason it requires to be summarized by team, in order to allow presentation of data in charts and table.  
+Aggregation is performed not only at the beginning of the code, where `regr_table` is created to have regression coefficients by league.  
+In order to allow in each call to filter data according to the number of matchdays selected through the `slider`, in each call of the `renderChart2` or `renderDataTable`, data is prefiltered according to values selected in the `sidebarPanel`.  
+Coefficients contained in the `regr_table` are used to predict number of goals to be scored by a team, based on the number of shots on target that the team will realize in the future. This feature allows to predict the future number of goals based on the historical data available in the database.  
